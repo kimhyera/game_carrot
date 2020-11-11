@@ -1,7 +1,7 @@
 # game_carrot
  당근 뽑는 게임  https://kimhyera.github.io/game_carrot
  
-## 주요기능
+### 주요기능
 <pre>
 1. 지정된 시간안에 모든당근을 클릭해야 이긴다. 
 
@@ -12,7 +12,7 @@
 </pre>
 
 
-## js 순서
+### js 순서
 <pre>
 1. 기본값, 노드변수, 전역변수, 상태변수 를 정의한다.
 
