@@ -57,7 +57,7 @@ export  class GameBuider{
 		//메서드
 		this.gameBtn.addEventListener('click', () => {
 			if (this.started) {
-				this.stop();
+				this.stop(Reason.cancel);
 			} else {
 				this.start();
 			}
@@ -86,29 +86,16 @@ export  class GameBuider{
 		sound.playBackground();
 	}
 
-	stop() {
+	stop(reason) {
 		this.started = false;
 		this.stopGameTimer();
 		this.hideGameButton();
-		sound.playAlert();
 		sound.playStopBackground();
-		this.onGameStop && this.onGameStop(Reason.cancel);
+	
+	
+		this.onGameStop && this.onGameStop(reason);
 	}
-	finish(win) {
-		this.started = false;
-		this.hideGameButton();
-		if (win) {
-			sound.playWin();
-		} else {
-			sound.playBug();
-		}
 
-		this.stopGameTimer();
-		sound.playStopBackground();
-		//gameFinishBanner.showWithText(win ? 'YOU WON 😄' : 'YOU LOST 😂');
-
-		this.onGameStop && this.onGameStop(win ? Reason.win : Reason.lose);
-	}
 	onItemClick = (item) => {
 		if (!this.started) return;
 
@@ -117,10 +104,10 @@ export  class GameBuider{
 			this.updateScoreBoard();
 
 			if (this.score === this.carrotCount) {
-				this.finish(true); //게임에서 이김
+				this.stop(Reason.win); //게임에서 이김
 			}
 		} else if (item === 'bug') {
-			this.finish(false); //게임짐.
+			this.stop(Reason.lose); //게임짐.
 		}
 	};
 
@@ -152,7 +139,7 @@ export  class GameBuider{
 			if (remainingTimeSec <= 0) {
 				clearInterval(this.timer);
 
-				this.finish(this.carrotCount === this.score); //게임짐.
+				this.stop(this.carrotCount === this.score ? Reason.win : Reason.lose); //게임짐.
 				return;
 			}
 			this.updateTimerText(--remainingTimeSec);
