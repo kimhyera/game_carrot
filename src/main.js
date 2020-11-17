@@ -1,6 +1,6 @@
 'use strict';
 import PopUp from './popup.js';
-import Game from './game.js';
+import GameBuider from './game.js';
 
 //팝업js
 
@@ -9,9 +9,14 @@ gameFinishBanner.setClickListener(() => {
 	game.start();
 });
 
-//게임
+//게임 체이닝 하여 처리함.
 
-const game = new Game(3, 2, 2);
+const game = new GameBuider()
+.gameDuration(5)
+.carrotcount(5)
+.bugCount(3)
+.build();
+
 game.setGameStopListener((reason) => {
 	console.log(reason);
 
