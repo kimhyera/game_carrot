@@ -1,14 +1,11 @@
 'use strict';
 import PopUp from './popup.js';
-import GameBuider from './game.js';
+import { GameBuider, Reason } from './game.js';
+
 
 //팝업js
 
 const gameFinishBanner = new PopUp();
-gameFinishBanner.setClickListener(() => {
-	game.start();
-});
-
 //게임 체이닝 하여 처리함.
 
 const game = new GameBuider()
@@ -18,21 +15,25 @@ const game = new GameBuider()
 .build();
 
 game.setGameStopListener((reason) => {
-	console.log(reason);
 
 	let message;
 	switch (reason) {
-		case 'cancel':
+		case Reason.cancel:
 			message = 'Replay? ';
 			break;
-		case 'win':
+		case Reason.win:
 			message = 'YOU WON 😁';
 			break;
-		case 'lose':
+		case Reason.lose:
 			message = 'YOU LOST 😓';
 			break;
 		default:
 			throw new Error('not valid reason');
 	}
 	gameFinishBanner.showWithText(message);
+});
+
+
+gameFinishBanner.setClickListener(() => {
+	game.start();
 });

@@ -4,19 +4,20 @@
 //게임 멈춤
 //완료 게임
 //타이머
-
-
-
 import Field from './field.js';
 import * as sound from './sound.js'; //전부다 import sound 부터
 
-
+export const Reason = Object.freeze({
+	win :'win',
+	lose:'lose',
+	cancel: 'cancel',
+})
 
 //Builder Pattern
 //1.인자가 3개 이상 넘어가는 경우 알수 없으므로 게임 빌더를 만든다.
 //2. 오브젝트를 간단명료 하게 가독성이 좋게 만든다.  
 //3. Game클래스는 안보이게 처리함.
-export default class GameBuider{
+export  class GameBuider{
 	gameDuration(duration){
 		this.gameDuration = duration;
 		return this; //클래스자체를 리턴 
@@ -91,7 +92,7 @@ export default class GameBuider{
 		this.hideGameButton();
 		sound.playAlert();
 		sound.playStopBackground();
-		this.onGameStop && this.onGameStop('cancel');
+		this.onGameStop && this.onGameStop(Reason.cancel);
 	}
 	finish(win) {
 		this.started = false;
@@ -106,7 +107,7 @@ export default class GameBuider{
 		sound.playStopBackground();
 		//gameFinishBanner.showWithText(win ? 'YOU WON 😄' : 'YOU LOST 😂');
 
-		this.onGameStop && this.onGameStop(win ? 'win' : 'lose');
+		this.onGameStop && this.onGameStop(win ? Reason.win : Reason.lose);
 	}
 	onItemClick = (item) => {
 		if (!this.started) return;
