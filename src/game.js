@@ -1,0 +1,154 @@
+'use strict';
+
+//게임 시작
+//게임 멈춤
+//완료 게임
+//타이머
+
+import Field from './field.js';
+import * as sound from './sound.js'; //전부다 import sound 부터
+export default class Game {
+	constructor(gameDuration, carrotCount, bugCount) {
+		//상태변수
+		this.gameDuration = gameDuration;
+		this.carrotCount = carrotCount;
+		this.bugCount = bugCount;
+		//돔요소
+
+		this.gameTimer = document.querySelector('.game__timer');
+		this.gameScore = document.querySelector('.game__score');
+		this.popUp = document.querySelector('.pop-up');
+		this.gameBtn = document.querySelector('.game__button');
+
+		//메서드
+		this.gameBtn.addEventListener('click', () => {
+			if (this.started) {
+				this.stop();
+			} else {
+				this.start();
+			}
+			//started = !started;
+		});
+		//Field js
+		this.gameField = new Field(carrotCount, bugCount);
+		this.gameField.setClickListener(this.onItemClick);
+
+		//전역변수
+		this.started = false;
+		this.score = 0;
+		this.timer = undefined;
+	}
+	setGameStopListener(onGameStop) {
+		//게임이 끝났을때 알려줄수 있도록 콜백을 받아오는것
+		this.onGameStop = onGameStop;
+	}
+	start() {
+		this.started = true;
+		this.initGame();
+		this.showStopButton();
+		this.showTimerAndScore();
+		this.startGameTimer();
+
+		sound.playBackground();
+	}
+
+	stop() {
+		this.started = false;
+		this.stopGameTimer();
+		this.hideGameButton();
+		sound.playAlert();
+		sound.playStopBackground();
+		this.onGameStop && this.onGameStop('cancel');
+	}
+	finish(win) {
+		this.started = false;
+		this.hideGameButton();
+		if (win) {
+			sound.playWin();
+		} else {
+			sound.playBug();
+		}
+
+		this.stopGameTimer();
+		sound.playStopBackground();
+		//gameFinishBanner.showWithText(win ? 'YOU WON 😄' : 'YOU LOST 😂');
+
+		this.onGameStop && this.onGameStop(win ? 'win' : 'lose');
+	}
+	onItemClick = (item) => {
+		if (!this.started) return;
+
+		if (item === 'carrot') {
+			this.score++;
+			this.updateScoreBoard();
+
+			if (this.score === this.carrotCount) {
+				this.finish(true); //게임에서 이김
+			}
+		} else if (item === 'bug') {
+			this.finish(false); //게임짐.
+		}
+	};
+
+	showStopButton() {
+		const icon = this.gameBtn.querySelector('.fas ');
+
+		icon.classList.add('fa-stop');
+		icon.classList.remove('fa-play');
+
+		this.gameBtn.style.visibility = 'visible';
+	}
+	hideGameButton() {
+		this.gameBtn.style.visibility = 'hidden';
+	}
+
+	showTimerAndScore() {
+		this.gameTimer.style.visibility = 'visible';
+		this.gameScore.style.visibility = 'visible';
+	}
+
+	startGameTimer() {
+		let remainingTimeSec = this.gameDuration;
+		this.updateTimerText(remainingTimeSec); //시작하기전에 업데이트 처음에는 5초부터 시작해서 하나하나 줄어갈수있도록
+
+		//timer 나중에 중지해야하기 떄문에 전역으로 처리한다.
+		this.timer = setInterval(() => {
+			//꾸준하게 되는게 아니라 우리가 지정한 시간에만 되기때문에
+			// 5초동안 인터벌 유지
+			if (remainingTimeSec <= 0) {
+				clearInterval(this.timer);
+
+				this.finish(this.carrotCount === this.score); //게임짐.
+				return;
+			}
+			this.updateTimerText(--remainingTimeSec);
+		}, 1000);
+	}
+
+	stopGameTimer() {
+		clearInterval(this.timer);
+	}
+	updateTimerText(time) {
+		const miutes = time >= 60 ? 1 : 0; //Math.floor(time / 60); //3.2 이면 정수로 만들어 주는 함수
+		const seconds = time % 60;
+		this.gameTimer.innerText = ` ${miutes}:${seconds}`;
+	}
+
+	refreshGame() {
+		popUp.classList.add('pop-up---hide');
+		this.gameBtn.style.visibility = 'visible';
+		this.startGame();
+	}
+	initGame() {
+		this.score = 0;
+		this.gameScore.innerText = this.carrotCount;
+		this.gameField.init();
+
+		//
+	}
+	//인자로 클래스이름, 카운트 ,갯수,이미지경로 넘겨주면 여기서 포지션을 랜덤으로 생성해서 필드에다가 추가한다.
+
+	updateScoreBoard() {
+		this.gameScore.innerText = this.carrotCount - this.score;
+	}
+}
