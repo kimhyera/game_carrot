@@ -5,6 +5,7 @@ const CARROT_SIZE = 80;
 const CARROT_COUNT = 7;
 const BUG_COUNT = 7;
 const GAME_DURATION = 7;
+.,
 
 
 
