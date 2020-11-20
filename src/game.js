@@ -4,7 +4,7 @@
 //게임 멈춤
 //완료 게임
 //타이머
-import Field from './field.js';
+import {Field ,ItemType} from './field.js';
 import * as sound from './sound.js'; //전부다 import sound 부터
 
 export const Reason = Object.freeze({
@@ -99,14 +99,14 @@ export  class GameBuider{
 	onItemClick = (item) => {
 		if (!this.started) return;
 
-		if (item === 'carrot') {
+		if (item === ItemType.carrot) {
 			this.score++;
 			this.updateScoreBoard();
 
 			if (this.score === this.carrotCount) {
 				this.stop(Reason.win); //게임에서 이김
 			}
-		} else if (item === 'bug') {
+		} else if (item === ItemType.bug) {
 			this.stop(Reason.lose); //게임짐.
 		}
 	};

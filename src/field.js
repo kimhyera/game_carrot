@@ -4,7 +4,12 @@ const carrotSound = new Audio('./sound/carrot_pull.mp3');
 import * as sound from './sound.js'; //전부다 import sound 부터
 
 const CARROT_SIZE = 80;
-export default class Field {
+
+export const ItemType = Object.freeze({
+	carrot: 'carrot',
+	bug: 'bug'
+})
+export  class Field {
 	constructor(carrotCount, bugCount) {
 		this.carrotCount = carrotCount;
 		this.bugCount = bugCount;
@@ -37,7 +42,7 @@ export default class Field {
 		const x2 = this.fieldRect.width - CARROT_SIZE;
 		const y2 = this.fieldRect.height - CARROT_SIZE;
 
-		//이렇게 하는거구나..;;;
+	
 
 		for (let i = 0; i < count; i++) {
 			const item = document.createElement('img');
@@ -61,10 +66,10 @@ export default class Field {
 			target.remove();
 
 			sound.playCarrot();
-			this.onItemClick && this.onItemClick('carrot');
+			this.onItemClick && this.onItemClick(ItemType.carrot);
 		} else if (target.matches('.bug')) {
 			sound.playBug();
-			this.onItemClick && this.onItemClick('bug');
+			this.onItemClick && this.onItemClick(ItemType.bug);
 		}
 	};
 }

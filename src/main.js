@@ -3,17 +3,18 @@ import PopUp from './popup.js';
 import * as sound from './sound.js'; //전부다 import sound 부터
 import { GameBuider, Reason } from './game.js';
 
-
-//팝업js
-
-const gameFinishBanner = new PopUp();
-//게임 체이닝 하여 처리함.
-
 const game = new GameBuider()
 .gameDuration(5)
 .carrotcount(5)
 .bugCount(3)
 .build();
+//게임 체이닝 하여 처리함.
+
+//팝업js
+const gameFinishBanner = new PopUp();
+
+
+
 
 game.setGameStopListener((reason) => {
 
